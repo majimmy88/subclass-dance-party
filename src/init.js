@@ -28,6 +28,43 @@ $(document).ready(function() {
       Math.random() * 1000
     );
     $('body').append(dancer.$node);
+    window.dancers.push(dancer);
   });
+
+  $('.lineup').on('click', function(event) {
+    for (var i = 0; i < window.dancers.length; i++) {
+      window.dancers[i].lineUp();
+    }
+  });
+
+  $('body').on("mouseover", ".pikachu-dancer", function (event) {
+      $(this).animate({"left": "0px"});
+    }
+  );
+
+  $('.interact').on('click', function(event) {
+    for (var i = 0; i < window.dancers.length; i++) {
+      if(!window.dancers[i].hasOwnProperty('nearestDancer')) {
+        window.dancers[i].nearestDancer;
+        window.dancers[i].distance = Infinity;
+      }
+      for (var n = 0; n < window.dancers.length; n++) {
+        if (n === i) {
+          continue;
+        }
+        var distance = Math.sqrt((window.dancers[i].left - window.dancers[n].left)**2 + (window.dancers[i].top - window.dancers[n].top)**2)
+
+        if (distance < window.dancers[i].distance) {
+          window.dancers[i].nearestDancer = window.dancers[n];
+        }
+      }
+    }
+
+    for (var i = 0; i < window.dancers.length; i++) {
+      window.dancers[i].$node.animate({"left": window.dancers[i].nearestDancer.left}, "fast");
+      window.dancers[i].$node.animate({"top": window.dancers[i].nearestDancer.top}, "fast");
+    }
+  })
+
 });
 
